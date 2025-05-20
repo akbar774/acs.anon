@@ -4,61 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jasa Pembuatan Script</title>
+    <title>CodeStore - STORE ACTZY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>🚀 ACTZY STORE NEW ERA</h1>
-        <nav>
-            <a href="#home">Beranda</a>
-            <a href="#services">Layanan</a>
-            <a href="#orders" id="myOrders">Pesanan Saya</a>
-            <a href="login.html" id="authButton">Login/Daftar</a>
-        </nav>
-    </header>
+    <nav class="glass-nav">
+        <div class="nav-brand">
+            <i class="fas fa-code"></i>
+            <span>CodeStore</span>
+        </div>
+        <div class="nav-links">
+            <a href="#services"><i class="fas fa-laptop-code"></i> Layanan</a>
+            <a href="#orders"><i class="fas fa-receipt"></i> Pesanan Saya</a>
+            <a href="login.html" class="btn-auth"><i class="fas fa-user"></i> Akun</a>
+        </div>
+    </nav>
 
-    <main>
-        <section id="services" class="services-container"></section>
+    <main class="container">
+        <section class="hero">
+            <h1>Transformasi Bisnis Anda dengan Menu menu store actzy</h1>
+            <p>Solusi otomasi profesional untuk efisiensi maksimal</p>
+        </section>
+
+        <section id="services" class="services-grid"></section>
     </main>
 
     <!-- Order Modal -->
     <div class="modal" id="orderModal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>📦 Form Pemesanan</h2>
-            <div class="payment-instruction">
-                <p>Silakan transfer ke:</p>
-                <div class="dana-info">
-                    <i class="fab fa-dana"></i>
-                    <span>62855-2079-0814 (A/N CodeMaster)</span>
-                </div>
-                <p>Total: <span id="orderAmount"></span></p>
-                <small>Jika ada masalah, hubungi WA: 6285520790814</small>
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-invoice-dollar"></i> Konfirmasi Pembayaran</h3>
+                <span class="close">&times;</span>
             </div>
-            <form id="orderForm">
-                <div class="form-group">
-                    <label>Tanggal Transfer</label>
-                    <input type="date" id="transferDate" required>
+            <div class="modal-body">
+                <div class="payment-instruction">
+                    <div class="dana-info">
+                        <i class="fab fa-dana"></i>
+                        <div>
+                            <p>Nomor DANA: <strong>6285520790814</strong></p>
+                            <small>A/N CodeStore Admin</small>
+                        </div>
+                    </div>
+                    <div class="notice">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Setelah transfer, upload bukti pembayaran untuk verifikasi</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Upload Bukti Transfer (Maks. 2MB)</label>
-                    <input type="file" id="paymentProof" accept="image/*, .pdf" required>
-                </div>
-                <div class="form-group">
-                    <label>Catatan Tambahan</label>
-                    <textarea id="orderNotes" rows="3"></textarea>
-                </div>
-                <button type="submit">Kirim Pesanan</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Order Detail Modal -->
-    <div class="modal" id="orderDetailModal">
-        <div class="modal-content">
-            <div id="orderDetailContent"></div>
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label>Upload Bukti Transfer</label>
+                        <div class="file-upload">
+                            <input type="file" id="paymentProof" accept="image/*" required>
+                            <label for="paymentProof" class="upload-btn">
+                                <i class="fas fa-cloud-upload-alt"></i> Pilih File
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="cta-btn">
+                        <i class="fas fa-paper-plane"></i> Kirim Pesanan
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
