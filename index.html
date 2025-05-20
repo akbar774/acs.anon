@@ -4,71 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeStore - STORE ACTZY</title>
+    <title>ACTZY STORE - Next Gen Tech Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="glass-nav">
-        <div class="nav-brand">
-            <i class="fas fa-code"></i>
-            <span>CodeStore</span>
+    <!-- Header & Navigation -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="logo.png" alt="ACTZY Logo" class="brand-logo">
+                <div class="brand-text">
+                    <h1>ACTZY STORE</h1>
+                    <p>NEW ERA TECHNOLOGY</p>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="#products">Products</a>
+                <a href="#events">Events</a>
+                <a href="#support">Support</a>
+                <div class="cart-container">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </div>
+            </nav>
         </div>
-        <div class="nav-links">
-            <a href="#services"><i class="fas fa-laptop-code"></i> Layanan</a>
-            <a href="#orders"><i class="fas fa-receipt"></i> Pesanan Saya</a>
-            <a href="login.html" class="btn-auth"><i class="fas fa-user"></i> Akun</a>
+    </header>
+
+    <!-- Event Banner (Admin Managed) -->
+    <section class="event-banner swiper">
+        <div class="swiper-wrapper" id="eventBanner">
+            <!-- Event slides loaded from admin -->
         </div>
-    </nav>
+        <div class="swiper-pagination"></div>
+    </section>
 
-    <main class="container">
-        <section class="hero">
-            <h1>Transformasi Bisnis Anda dengan Menu menu store actzy</h1>
-            <p>Solusi otomasi profesional untuk efisiensi maksimal</p>
-        </section>
-
-        <section id="services" class="services-grid"></section>
+    <!-- Product Grid (Admin Managed) -->
+    <main class="product-grid" id="productGrid">
+        <!-- Products loaded from admin -->
     </main>
 
-    <!-- Order Modal -->
-    <div class="modal" id="orderModal">
-        <div class="modal-content card">
-            <div class="modal-header">
-                <h3><i class="fas fa-file-invoice-dollar"></i> Konfirmasi Pembayaran</h3>
-                <span class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="payment-instruction">
-                    <div class="dana-info">
-                        <i class="fab fa-dana"></i>
-                        <div>
-                            <p>Nomor DANA: <strong>6285520790814</strong></p>
-                            <small>A/N CodeStore Admin</small>
-                        </div>
-                    </div>
-                    <div class="notice">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Setelah transfer, upload bukti pembayaran untuk verifikasi</p>
-                    </div>
-                </div>
-                <form id="orderForm">
-                    <div class="form-group">
-                        <label>Upload Bukti Transfer</label>
-                        <div class="file-upload">
-                            <input type="file" id="paymentProof" accept="image/*" required>
-                            <label for="paymentProof" class="upload-btn">
-                                <i class="fas fa-cloud-upload-alt"></i> Pilih File
-                            </label>
-                        </div>
-                    </div>
-                    <button type="submit" class="cta-btn">
-                        <i class="fas fa-paper-plane"></i> Kirim Pesanan
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
