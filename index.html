@@ -4,37 +4,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Perhiasan</title>
+    <title>ACTZY STORE👾</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>ACTZY STORE👾</h1>
-        <a href="owner.html" class="admin-login">Owner Login</a>
-    </header>
+    <!-- Header dan product-container sama seperti sebelumnya... -->
 
-    <div class="product-container" id="products">
-        <!-- Produk akan dimuat via JavaScript -->
+    <!-- Modal Order -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Form Pemesanan</h2>
+            <form id="orderForm">
+                <input type="hidden" id="selectedProduct">
+                <div class="form-group">
+                    <label>Nomor DANA <i class="fab fa-dana"></i></label>
+                    <input type="number" id="danaNumber" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Bukti Transfer</label>
+                    <input type="file" id="paymentProof" accept="image/*" required>
+                </div>
+                <button type="submit">Konfirmasi Pembayaran</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Status -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <div id="statusContent"></div>
+        </div>
     </div>
 
     <script>
-        // Load produk dari Local Storage
-        document.addEventListener('DOMContentLoaded', () => {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            const container = document.getElementById('products');
+        // ... Kode sebelumnya ...
+
+        // Handle Order
+        function showOrderForm(productId) {
+            document.getElementById('selectedProduct').value = productId;
+            document.getElementById('orderModal').style.display = 'block';
+        }
+
+        // Submit Order
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            products.forEach(product => {
-                container.innerHTML += `
-                    <div class="product-card">
-                        <img src="${product.image}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <span class="label">${product.label}</span>
-                        <p class="price">Rp ${product.price.toLocaleString()}</p>
-                        <button>Beli Sekarang</button>
-                    </div>
-                `;
-            });
+            const reader = new FileReader();
+            const paymentProof = document.getElementById('paymentProof').files[0];
+            const orderId = Date.now().toString();
+
+            reader.onload = function(e) {
+                const order = {
+                    id: orderId,
+                    productId: document.getElementById('selectedProduct').value,
+                    danaNumber: document.getElementById('danaNumber').value,
+                    paymentProof: e.target.result,
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                };
+
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders.push(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+
+                showOrderStatus(orderId);
+                document.getElementById('orderModal').style.display = 'none';
+            };
+            
+            reader.readAsDataURL(paymentProof);
         });
+
+        // Tampilkan Status Order
+        function showOrderStatus(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.id === orderId);
+            
+            let content = '';
+            if(order) {
+                content = `
+                    <h3>Status Order #${order.id}</h3>
+                    <p>Status: <span class="status-${order.status}">${order.status.toUpperCase()}</span></p>
+                    ${order.status === 'approved' ? 
+                        `<a href="${order.downloadLink}" class="download-btn">
+                            <i class="fas fa-download"></i> Download File
+                        </a>` : ''}
+                `;
+            } else {
+                content = `<p>Order tidak ditemukan</p>`;
+            }
+            
+            document.getElementById('statusContent').innerHTML = content;
+            document.getElementById('statusModal').style.display = 'block';
+        }
     </script>
 </body>
 </html>
