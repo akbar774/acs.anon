@@ -1,125 +1,81 @@
 <!-- owner.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Owner Panel</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="owner-container">
-        <!-- Form Login -->
-        <form id="loginForm" class="login-form">
-            <h2>Owner Login</h2>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>
+<!-- Tambahkan ini di dalam adminPanel setelah form tambah produk -->
+<div class="order-management">
+    <h2>Manajemen Order</h2>
+    <div class="order-list" id="orderList"></div>
+</div>
 
-        <!-- Admin Panel (Awalnya tersembunyi) -->
-        <div id="adminPanel" style="display: none;">
-            <h2>Tambah Produk Baru</h2>
-            <form id="productForm">
-                <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" id="productName" required>
-                </div>
-                <div class="form-group">
-                    <label>Label/Kategori</label>
-                    <input type="text" id="productLabel" required>
-                </div>
-                <div class="form-group">
-                    <label>Harga</label>
-                    <input type="number" id="productPrice" required>
-                </div>
-                <div class="form-group">
-                    <label>Gambar Produk</label>
-                    <input type="file" id="productImage" accept="image/*" required>
-                </div>
-                <button type="submit">Tambah Produk</button>
-            </form>
+<script>
+    // ... Kode sebelumnya ...
 
-            <h2 style="margin-top: 2rem;">Daftar Produk</h2>
-            <div id="productList"></div>
-        </div>
-    </div>
-
-    <script>
-        // Validasi Login
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if(username === 'actzy' && password === '3Z^Yk~HaKd6M-spj>PoC') {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                loadProducts();
-            } else {
-                alert('Login gagal!');
-            }
-        });
-
-        // Handle Form Produk
-        document.getElementById('productForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const reader = new FileReader();
-            const file = document.getElementById('productImage').files[0];
-            
-            reader.onload = function(e) {
-                const product = {
-                    name: document.getElementById('productName').value,
-                    label: document.getElementById('productLabel').value,
-                    price: parseInt(document.getElementById('productPrice').value),
-                    image: e.target.result
-                };
-
-                // Simpan ke Local Storage
-                const products = JSON.parse(localStorage.getItem('products')) || [];
-                products.push(product);
-                localStorage.setItem('products', JSON.stringify(products));
-                
-                // Reset form
-                document.getElementById('productForm').reset();
-                loadProducts();
-            }
-            
-            reader.readAsDataURL(file);
-        });
-
-        // Load Produk
-        function loadProducts() {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            const productList = document.getElementById('productList');
-            productList.innerHTML = '';
-            
-            products.forEach((product, index) => {
-                productList.innerHTML += `
-                    <div class="product-item">
-                        <img src="${product.image}" width="50">
-                        <h3>${product.name}</h3>
-                        <p>${product.label} - Rp ${product.price.toLocaleString()}</p>
-                        <button onclick="deleteProduct(${index})">Hapus</button>
+    function loadOrders() {
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        const orderList = document.getElementById('orderList');
+        orderList.innerHTML = '';
+        
+        orders.forEach(order => {
+            orderList.innerHTML += `
+                <div class="order-item status-${order.status}">
+                    <div class="order-header">
+                        <span>#${order.id}</span>
+                        <span>${new Date(order.timestamp).toLocaleString()}</span>
                     </div>
-                `;
-            });
-        }
+                    <div class="order-body">
+                        <p>DANA: ${order.danaNumber}</p>
+                        <img src="${order.paymentProof}" 
+                             class="proof-img" 
+                             onclick="showProof('${order.paymentProof}')">
+                        <div class="order-actions">
+                            <button onclick="approveOrder('${order.id}')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="reject" onclick="rejectOrder('${order.id}')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                            <input type="file" 
+                                   id="file${order.id}" 
+                                   class="file-input" 
+                                   onchange="uploadFile('${order.id}', this)">
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
 
-        // Hapus Produk
-        window.deleteProduct = function(index) {
-            const products = JSON.parse(localStorage.getItem('products'));
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-            loadProducts();
+    function showProof(imgSrc) {
+        const w = window.open('', 'Bukti Transfer');
+        w.document.write(`<img src="${imgSrc}" style="max-width:100%">`);
+    }
+
+    function approveOrder(orderId) {
+        const orders = JSON.parse(localStorage.getItem('orders'));
+        const orderIndex = orders.findIndex(o => o.id === orderId);
+        
+        const fileInput = document.getElementById(`file${orderId}`);
+        if(fileInput.files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                orders[orderIndex].downloadLink = e.target.result;
+                orders[orderIndex].status = 'approved';
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadOrders();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
         }
-    </script>
-</body>
-</html>
+    }
+
+    function rejectOrder(orderId) {
+        const orders = JSON.parse(localStorage.getItem('orders'));
+        const orderIndex = orders.findIndex(o => o.id === orderId);
+        orders[orderIndex].status = 'rejected';
+        localStorage.setItem('orders', JSON.stringify(orders));
+        loadOrders();
+    }
+
+    function uploadFile(orderId, input) {
+        // Handle file upload logic
+    }
+
+    // Panggil loadOrders() setelah login
+</script>
