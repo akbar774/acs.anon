@@ -1,81 +1,72 @@
 <!-- owner.html -->
-<!-- Tambahkan ini di dalam adminPanel setelah form tambah produk -->
-<div class="order-management">
-    <h2>Manajemen Order</h2>
-    <div class="order-list" id="orderList"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Dashboard -->
+        <div class="admin-sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="#orders">Pesanan</a></li>
+                <li><a href="#services">Layanan</a></li>
+                <li><a href="#settings">Pengaturan</a></li>
+                <li><button onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
 
-<script>
-    // ... Kode sebelumnya ...
-
-    function loadOrders() {
-        const orders = JSON.parse(localStorage.getItem('orders')) || [];
-        const orderList = document.getElementById('orderList');
-        orderList.innerHTML = '';
-        
-        orders.forEach(order => {
-            orderList.innerHTML += `
-                <div class="order-item status-${order.status}">
-                    <div class="order-header">
-                        <span>#${order.id}</span>
-                        <span>${new Date(order.timestamp).toLocaleString()}</span>
-                    </div>
-                    <div class="order-body">
-                        <p>DANA: ${order.danaNumber}</p>
-                        <img src="${order.paymentProof}" 
-                             class="proof-img" 
-                             onclick="showProof('${order.paymentProof}')">
-                        <div class="order-actions">
-                            <button onclick="approveOrder('${order.id}')">
-                                <i class="fas fa-check"></i> Approve
-                            </button>
-                            <button class="reject" onclick="rejectOrder('${order.id}')">
-                                <i class="fas fa-times"></i> Reject
-                            </button>
-                            <input type="file" 
-                                   id="file${order.id}" 
-                                   class="file-input" 
-                                   onchange="uploadFile('${order.id}', this)">
-                        </div>
-                    </div>
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Orders Management -->
+            <div id="ordersSection">
+                <h2>🛎️ Manajemen Pesanan</h2>
+                <div class="order-filters">
+                    <select id="filterStatus">
+                        <option value="all">Semua Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="paid">Dibayar</option>
+                        <option value="completed">Selesai</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
                 </div>
-            `;
-        });
-    }
+                <div class="orders-list" id="ordersList"></div>
+            </div>
 
-    function showProof(imgSrc) {
-        const w = window.open('', 'Bukti Transfer');
-        w.document.write(`<img src="${imgSrc}" style="max-width:100%">`);
-    }
+            <!-- Services Management -->
+            <div id="servicesSection" style="display:none;">
+                <h2>📦 Manajemen Layanan</h2>
+                <form id="serviceForm">
+                    <div class="form-group">
+                        <label>Nama Layanan</label>
+                        <input type="text" id="serviceName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <input type="number" id="servicePrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="serviceDesc" required></textarea>
+                    </div>
+                    <button type="submit">Simpan Layanan</button>
+                </form>
+                <div class="services-list" id="servicesList"></div>
+            </div>
+        </div>
+    </div>
 
-    function approveOrder(orderId) {
-        const orders = JSON.parse(localStorage.getItem('orders'));
-        const orderIndex = orders.findIndex(o => o.id === orderId);
-        
-        const fileInput = document.getElementById(`file${orderId}`);
-        if(fileInput.files.length > 0) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                orders[orderIndex].downloadLink = e.target.result;
-                orders[orderIndex].status = 'approved';
-                localStorage.setItem('orders', JSON.stringify(orders));
-                loadOrders();
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        }
-    }
+    <!-- Order Detail Modal -->
+    <div class="modal" id="adminOrderModal">
+        <div class="modal-content">
+            <div id="adminOrderDetail"></div>
+        </div>
+    </div>
 
-    function rejectOrder(orderId) {
-        const orders = JSON.parse(localStorage.getItem('orders'));
-        const orderIndex = orders.findIndex(o => o.id === orderId);
-        orders[orderIndex].status = 'rejected';
-        localStorage.setItem('orders', JSON.stringify(orders));
-        loadOrders();
-    }
-
-    function uploadFile(orderId, input) {
-        // Handle file upload logic
-    }
-
-    // Panggil loadOrders() setelah login
-</script>
+    <script src="app.js"></script>
+</body>
+</html>
