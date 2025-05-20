@@ -1,0 +1,48 @@
+/* File: src/App.css */
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.chat-container {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.chat-messages {
+  height: 400px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  padding: 10px;
+}
+
+.message {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  max-width: 70%;
+}
+
+.message.me {
+  background: #007bff;
+  color: white;
+  margin-left: auto;
+}
+
+.message.partner {
+  background: #e9ecef;
+  margin-right: auto;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+button.skip {
+  background: #dc3545;
+  color: white;
+  }
