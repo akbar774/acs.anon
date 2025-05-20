@@ -1,123 +1,40 @@
-// File: src/App.js
-import { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onChildAdded, push, remove } from 'firebase/database';
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Perhiasan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ACTZY STORE👾</h1>
+        <a href="owner.html" class="admin-login">Owner Login</a>
+    </header>
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "1234567890"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-function App() {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [userId, setUserId] = useState('');
-  const [partnerId, setPartnerId] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
-
-  // Cari partner
-  const findPartner = () => {
-    const newUserId = Date.now().toString();
-    setUserId(newUserId);
-    setIsSearching(true);
-
-    const waitingRef = ref(db, 'waiting');
-    const newUserRef = push(waitingRef);
-    set(newUserRef, { userId: newUserId });
-
-    onChildAdded(waitingRef, (snapshot) => {
-      if(snapshot.val().userId !== newUserId && !partnerId) {
-        const foundPartner = snapshot.val().userId;
-        setPartnerId(foundPartner);
-        setIsSearching(false);
-        remove(ref(db, `waiting/${snapshot.key}`));
-        startChat(foundPartner);
-      }
-    });
-  };
-
-  // Mulai chat
-  const startChat = (partner) => {
-    const chatRef = ref(db, `chats/${partner}`);
-    onChildAdded(chatRef, (snapshot) => {
-      if(snapshot.val().sender !== userId) {
-        setMessages(prev => [...prev, {
-          text: snapshot.val().text,
-          isMe: false
-        }]);
-      }
-    });
-  };
-
-  // Kirim pesan
-  const sendMessage = () => {
-    if(message.trim() && partnerId) {
-      const messagesRef = ref(db, `chats/${partnerId}`);
-      push(messagesRef, {
-        text: message,
-        sender: userId
-      });
-      setMessages(prev => [...prev, { text: message, isMe: true }]);
-      setMessage('');
-    }
-  };
-
-  // Skip partner
-  const skipPartner = () => {
-    if(partnerId) {
-      remove(ref(db, `chats/${partnerId}`));
-      setPartnerId(null);
-      setMessages([]);
-    }
-    findPartner();
-  };
-
-  return (
-    <div className="container">
-      <h1>Anonymous Chat Web</h1>
-      
-      {!userId ? (
-        <button onClick={findPartner}>Start Anonymous Chat</button>
-      ) : (
-        <div className="chat-container">
-          {isSearching ? (
-            <div className="searching">
-              🔍 Searching for partner...
-              <button onClick={() => window.location.reload()}>Cancel</button>
-            </div>
-          ) : (
-            <>
-              <div className="chat-messages">
-                {messages.map((msg, i) => (
-                  <div key={i} className={`message ${msg.isMe ? 'me' : 'partner'}`}>
-                    {msg.text}
-                  </div>
-                ))}
-              </div>
-              
-              <div className="chat-input">
-                <input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                />
-                <button onClick={sendMessage}>Send</button>
-                <button onClick={skipPartner} className="skip">Skip Partner</button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+    <div class="product-container" id="products">
+        <!-- Produk akan dimuat via JavaScript -->
     </div>
-  );
-}
 
-export default App;
+    <script>
+        // Load produk dari Local Storage
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const container = document.getElementById('products');
+            
+            products.forEach(product => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <span class="label">${product.label}</span>
+                        <p class="price">Rp ${product.price.toLocaleString()}</p>
+                        <button>Beli Sekarang</button>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
