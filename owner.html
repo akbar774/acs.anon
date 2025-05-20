@@ -4,66 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Admin Panel - CodeStore</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="admin-container">
-        <!-- Dashboard -->
-        <div class="admin-sidebar">
-            <h2>Admin Panel</h2>
-            <ul>
-                <li><a href="#orders">Pesanan</a></li>
-                <li><a href="#services">Layanan</a></li>
-                <li><a href="#settings">Pengaturan</a></li>
-                <li><button onclick="logout()">Logout</button></li>
-            </ul>
-        </div>
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <i class="fas fa-user-crown"></i>
+                <h2>Admin Panel</h2>
+            </div>
+            <nav class="admin-menu">
+                <a href="#orders" class="active"><i class="fas fa-clipboard-list"></i> Pesanan</a>
+                <a href="#services"><i class="fas fa-cube"></i> Layanan</a>
+                <a href="#settings"><i class="fas fa-cog"></i> Pengaturan</a>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </nav>
+        </aside>
 
-        <!-- Content Area -->
-        <div class="admin-content">
-            <!-- Orders Management -->
-            <div id="ordersSection">
-                <h2>🛎️ Manajemen Pesanan</h2>
-                <div class="order-filters">
-                    <select id="filterStatus">
-                        <option value="all">Semua Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="paid">Dibayar</option>
-                        <option value="completed">Selesai</option>
-                        <option value="rejected">Ditolak</option>
-                    </select>
+        <main class="admin-main">
+            <section id="orders" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-tasks"></i> Manajemen Pesanan</h2>
+                    <div class="filter-controls">
+                        <select id="filterStatus" class="filter-select">
+                            <option value="all">Semua Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Selesai</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
                 </div>
+                
                 <div class="orders-list" id="ordersList"></div>
-            </div>
-
-            <!-- Services Management -->
-            <div id="servicesSection" style="display:none;">
-                <h2>📦 Manajemen Layanan</h2>
-                <form id="serviceForm">
-                    <div class="form-group">
-                        <label>Nama Layanan</label>
-                        <input type="text" id="serviceName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Harga</label>
-                        <input type="number" id="servicePrice" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Deskripsi</label>
-                        <textarea id="serviceDesc" required></textarea>
-                    </div>
-                    <button type="submit">Simpan Layanan</button>
-                </form>
-                <div class="services-list" id="servicesList"></div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Order Detail Modal -->
-    <div class="modal" id="adminOrderModal">
+    <div class="modal" id="orderDetailModal">
         <div class="modal-content">
-            <div id="adminOrderDetail"></div>
+            <div class="modal-header">
+                <h3>Detail Pesanan</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="orderDetailContent"></div>
         </div>
     </div>
 
